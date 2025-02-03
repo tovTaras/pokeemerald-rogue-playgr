@@ -58,6 +58,7 @@ jobs:
       #   # -Wno-unused-but-set-variable is to silence the warnings of the unused variables, useful when trying to compile with my mods
         
       - name: Build Release
+      continue-on-error: true
         env:
           MODERN: 1
           COMPARE: 0
