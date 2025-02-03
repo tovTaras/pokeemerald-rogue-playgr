@@ -31,6 +31,7 @@
 #include "item_icon.h"
 #include "item_use.h"
 #include "test_runner.h"
+#include "constants/battle.h"
 #include "constants/battle_anim.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
@@ -3832,3 +3833,28 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows)
     }
 #endif
 }
+
+#include "constants/battle.h"
+#include "graphics.h"
+
+void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
+    u8 type1 = gBattleMons[battlerId].type1;
+    u8 type2 = gBattleMons[battlerId].type2;
+
+    // Position on the screen
+    u8 x = 50; // Adjust X position
+    u8 y = 40; // Adjust Y position below HP bar
+
+    if (type1 != TYPE_NONE) {
+        // Draw type 1 name/icon
+        StringCopy(gStringVar1, gTypeNames[type1]); // gTypeNames holds type names
+        AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, TEXT_SPEED_FF, NULL);
+    }
+
+    if (type2 != TYPE_NONE && type2 != type1) {
+        // Draw type 2 name/icon
+        StringCopy(gStringVar1, gTypeNames[type2]);
+        AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, TEXT_SPEED_FF, NULL); // Offset for second type
+    }
+}
+
