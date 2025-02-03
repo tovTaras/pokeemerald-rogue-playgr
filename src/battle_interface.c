@@ -3011,8 +3011,16 @@ static u8 *AddTextPrinterAndCreateWindowOnHealthbox(const u8 *str, u32 x, u32 y,
     AddTextPrinterParameterized4(winId, FONT_SMALL, x, y, 0, 0, color, TEXT_SKIP_DRAW, str);
 
     *windowId = winId;
+
+    // Ensure battlerId is correct (usually retrieved via gBattleScripting or gActiveBattler)
+    u8 battlerId = GetBattlerIdFromHealthbox(winId);
+
+    // Draw Pokémon type names
+    DrawTypesOnBattleUI(battlerId, winId);
+
     return (u8 *)(GetWindowAttribute(winId, WINDOW_TILE_DATA));
 }
+
 
 static void RemoveWindowOnHealthbox(u32 windowId)
 {
