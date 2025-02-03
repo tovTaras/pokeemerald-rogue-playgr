@@ -2995,6 +2995,27 @@ u8 GetHPBarLevel(s16 hp, s16 maxhp)
     return result;
 }
 
+void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
+    u8 type1 = gBattleMons[battlerId].type1;
+    u8 type2 = gBattleMons[battlerId].type2;
+
+    // Position on the screen
+    u8 x = 50; // Adjust X position
+    u8 y = 40; // Adjust Y position below HP bar
+
+    if (type1 != TYPE_NONE) {
+        // Draw type 1 name/icon
+        StringCopy(gStringVar1, gTypeNames[type1]); // gTypeNames holds type names
+        AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, TEXT_SKIP_DRAW, NULL);
+    }
+
+    if (type2 != TYPE_NONE && type2 != type1) {
+        // Draw type 2 name/icon
+        StringCopy(gStringVar1, gTypeNames[type2]);
+        AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, TEXT_SKIP_DRAW, NULL); // Offset for second type
+    }
+}
+
 static u8 *AddTextPrinterAndCreateWindowOnHealthbox(const u8 *str, u32 x, u32 y, u32 bgColor, u32 *windowId)
 {
     u16 winId;
@@ -3840,26 +3861,5 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows)
         pltOutline->b = defaultPlttOutline->b;
     }
 #endif
-}
-
-void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
-    u8 type1 = gBattleMons[battlerId].type1;
-    u8 type2 = gBattleMons[battlerId].type2;
-
-    // Position on the screen
-    u8 x = 50; // Adjust X position
-    u8 y = 40; // Adjust Y position below HP bar
-
-    if (type1 != TYPE_NONE) {
-        // Draw type 1 name/icon
-        StringCopy(gStringVar1, gTypeNames[type1]); // gTypeNames holds type names
-        AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, 0xFF, NULL);
-    }
-
-    if (type2 != TYPE_NONE && type2 != type1) {
-        // Draw type 2 name/icon
-        StringCopy(gStringVar1, gTypeNames[type2]);
-        AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, 0xFF, NULL); // Offset for second type
-    }
 }
 
