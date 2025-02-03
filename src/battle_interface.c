@@ -3009,12 +3009,12 @@ void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
 
     if (type1 != TYPE_NONE) {
         StringCopy(gStringVar1, gTypeNames[type1]);
-        AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, 0xFF, NULL);
+        AddTextPrinterParameterized4(winId, FONT_SMALL, x, y, 0, 0, color, 0xFF, str);
     }
 
     if (type2 != TYPE_NONE && type2 != type1) {
         StringCopy(gStringVar1, gTypeNames[type2]);
-        AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, 0xFF, NULL); // Offset for second type
+       AddTextPrinterParameterized4(winId, FONT_SMALL, x, y, 0, 0, color, 0xFF, str); // Offset for second type
     }
 
     CopyWindowToVram(windowId, 2); // Ensure it redraws
