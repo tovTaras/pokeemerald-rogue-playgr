@@ -3845,7 +3845,7 @@ void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
     if (type1 != TYPE_NONE) {
         // Draw type 1 name/icon
         StringCopy(gStringVar1, gTypeNames[type1]); // gTypeNames holds type names
-        AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, TEXT_SPEED_FF, NULL);
+        AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, 0xFF, NULL);
     }
 
     if (type2 != TYPE_NONE && type2 != type1) {
