@@ -2997,8 +2997,7 @@ u8 GetHPBarLevel(s16 hp, s16 maxhp)
 
 void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
     if (battlerId >= gBattlersCount) {
-        DebugPrintf("Invalid battlerId: %d", battlerId);
-        return;
+        return; // Prevent out-of-bounds errors
     }
 
     u8 type1 = gBattleMons[battlerId].type1;
@@ -3009,19 +3008,25 @@ void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
     u8 y = 40; // Adjust Y position below HP bar
 
     if (type1 != TYPE_NONE) {
-        // Draw type 1 name/icon
-        StringCopy(gStringVar1, gTypeNames[type1]); // gTypeNames holds type names
+        StringCopy(gStringVar1, gTypeNames[type1]);
         AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, 0xFF, NULL);
     }
 
     if (type2 != TYPE_NONE && type2 != type1) {
-        // Draw type 2 name/icon
         StringCopy(gStringVar1, gTypeNames[type2]);
         AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, 0xFF, NULL); // Offset for second type
     }
 
-    // Force redraw
-    CopyWindowToVram(windowId, 2);
+    CopyWindowToVram(windowId, 2); // Ensure it redraws
+}
+
+// Fallback function if GetBattlerIdFromHealthbox is missing
+static u8 GetBattlerIdFromWindow(u16 winId) {
+#ifdef GetBattlerIdFromHealthbox
+    return GetBattlerIdFromHealthbox(winId);
+#else
+    return GetBattlerAtPosition(B_POSITION_PLAYER_LEFT); // Fallback
+#endif
 }
 
 static u8 *AddTextPrinterAndCreateWindowOnHealthbox(const u8 *str, u32 x, u32 y, u32 bgColor, u32 *windowId) {
@@ -3040,14 +3045,14 @@ static u8 *AddTextPrinterAndCreateWindowOnHealthbox(const u8 *str, u32 x, u32 y,
 
     *windowId = winId;
 
-    // Ensure battlerId is correct (use gActiveBattler for wild Pokémon)
-    u8 battlerId = (gBattleTypeFlags & BATTLE_TYPE_TRAINER) ? GetBattlerIdFromHealthbox(winId) : gActiveBattler;
+    // Ensure battlerId is valid
+    u8 battlerId = GetBattlerIdFromWindow(winId);
 
-    // Draw Pokémon type names
     DrawTypesOnBattleUI(battlerId, winId);
 
     return (u8 *)(GetWindowAttribute(winId, WINDOW_TILE_DATA));
 }
+
 
 static void RemoveWindowOnHealthbox(u32 windowId)
 {
