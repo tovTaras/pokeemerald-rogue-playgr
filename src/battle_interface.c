@@ -3834,9 +3834,6 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows)
 #endif
 }
 
-#include "constants/battle.h"
-#include "graphics.h"
-
 void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
     u8 type1 = gBattleMons[battlerId].type1;
     u8 type2 = gBattleMons[battlerId].type2;
@@ -3854,7 +3851,7 @@ void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
     if (type2 != TYPE_NONE && type2 != type1) {
         // Draw type 2 name/icon
         StringCopy(gStringVar1, gTypeNames[type2]);
-        AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, TEXT_SPEED_FF, NULL); // Offset for second type
+        AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, 0xFF, NULL); // Offset for second type
     }
 }
 
