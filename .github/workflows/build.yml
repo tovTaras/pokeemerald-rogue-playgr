@@ -58,7 +58,7 @@ jobs:
           MODERN: 1
           COMPARE: 0
           RELEASE: 1
-        run: make -j${nproc} -O -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unused-function all
+        run: make -j$(nproc) -O -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unused-function -Wno-unused all
         # -Wno-unused-but-set-variable is to silence the warnings of the unused variables, useful when trying to compile with my mods
 
       - uses: actions/upload-artifact@v4
@@ -78,7 +78,7 @@ jobs:
           name: emeraldrogue_map
           path: emeraldrogue.map
           retention-days: 1
-
+s
           ## what's below can be removed if ever build from github again
           ## some tests fail anyway, can't be bother to fix these so fuck off
       # - name: Update Memory Stats
