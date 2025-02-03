@@ -2996,6 +2996,11 @@ u8 GetHPBarLevel(s16 hp, s16 maxhp)
 }
 
 void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
+    if (battlerId >= gBattlersCount) {
+        DebugPrintf("Invalid battlerId: %d", battlerId);
+        return;
+    }
+
     u8 type1 = gBattleMons[battlerId].type1;
     u8 type2 = gBattleMons[battlerId].type2;
 
@@ -3006,18 +3011,20 @@ void DrawTypesOnBattleUI(u8 battlerId, u8 windowId) {
     if (type1 != TYPE_NONE) {
         // Draw type 1 name/icon
         StringCopy(gStringVar1, gTypeNames[type1]); // gTypeNames holds type names
-        AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, TEXT_SKIP_DRAW, NULL);
+        AddTextPrinterParameterized(windowId, 0, gStringVar1, x, y, 0xFF, NULL);
     }
 
     if (type2 != TYPE_NONE && type2 != type1) {
         // Draw type 2 name/icon
         StringCopy(gStringVar1, gTypeNames[type2]);
-        AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, TEXT_SKIP_DRAW, NULL); // Offset for second type
+        AddTextPrinterParameterized(windowId, 0, gStringVar1, x + 40, y, 0xFF, NULL); // Offset for second type
     }
+
+    // Force redraw
+    CopyWindowToVram(windowId, 2);
 }
 
-static u8 *AddTextPrinterAndCreateWindowOnHealthbox(const u8 *str, u32 x, u32 y, u32 bgColor, u32 *windowId)
-{
+static u8 *AddTextPrinterAndCreateWindowOnHealthbox(const u8 *str, u32 x, u32 y, u32 bgColor, u32 *windowId) {
     u16 winId;
     u8 color[3];
     struct WindowTemplate winTemplate = sHealthboxWindowTemplate;
@@ -3029,19 +3036,18 @@ static u8 *AddTextPrinterAndCreateWindowOnHealthbox(const u8 *str, u32 x, u32 y,
     color[1] = 1;
     color[2] = 3;
 
-    AddTextPrinterParameterized4(winId, FONT_SMALL, x, y, 0, 0, color, TEXT_SKIP_DRAW, str);
+    AddTextPrinterParameterized4(winId, FONT_SMALL, x, y, 0, 0, color, 0xFF, str);
 
     *windowId = winId;
 
-    // Ensure battlerId is correct (usually retrieved via gBattleScripting or gActiveBattler)
-    u8 battlerId = GetBattlerIdFromHealthbox(winId);
+    // Ensure battlerId is correct (use gActiveBattler for wild Pokémon)
+    u8 battlerId = (gBattleTypeFlags & BATTLE_TYPE_TRAINER) ? GetBattlerIdFromHealthbox(winId) : gActiveBattler;
 
     // Draw Pokémon type names
     DrawTypesOnBattleUI(battlerId, winId);
 
     return (u8 *)(GetWindowAttribute(winId, WINDOW_TILE_DATA));
 }
-
 
 static void RemoveWindowOnHealthbox(u32 windowId)
 {
